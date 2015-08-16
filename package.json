@@ -1,9 +1,10 @@
 {
   "name": "@more-markdown/test-processor",
-  "version": "0.1.0",
-  "description": "A more-markdown test-suite.",
+  "version": "0.1.1",
+  "description": "A more-markdown test-processor.",
   "main": "lib/test_processor.js",
   "dependencies": {
+    "@more-markdown/callback-objects": "^0.1.0",
     "lodash": "^3.10.1",
     "node-uuid": "^1.4.3"
   },
