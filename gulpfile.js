@@ -3,6 +3,8 @@ var source      = require('vinyl-source-stream');
 var browserify  = require('browserify');
 var gutil       = require('gulp-util');
 var coffee      = require('gulp-coffee');
+var watch       = require('gulp-watch');
+var plumber     = require('gulp-plumber');
 
 // browserify bundle for direct browser use.
 gulp.task("bundle", function(){
@@ -17,6 +19,14 @@ gulp.task("bundle", function(){
   return bundler.bundle()
     .pipe(source('test_processor.js'))
     .pipe(gulp.dest('dist'));
+});
+
+gulp.task("watch", function(){
+  gulp.src('./src/**/*.coffee')
+    .pipe(watch('./src/**/*.coffee'))
+    .pipe(plumber())
+    .pipe(coffee({bare: true}).on('error', gutil.log))
+    .pipe(gulp.dest('./lib/'))
 });
 
 // simple transpile if you want to bundle it yourself

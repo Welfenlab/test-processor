@@ -2,6 +2,14 @@
 markdownItTest = require './md_test'
 cbo = require '@more-markdown/callback-objects'
 uuid = require 'node-uuid'
+_ = require "lodash"
+
+unifiedCallbacks = (apis, cbName) ->
+  _(apis).chain()
+    .select cbName
+    .pluck cbName
+    .compact()
+    .value()
 
 testProcessor = (langs, config) ->
   register: (mdInstance, postProcessors) ->
@@ -9,32 +17,24 @@ testProcessor = (langs, config) ->
       testsChanged: cbo()
       testsCodeChanged: cbo()
 
-    markdownItTest.register mdInstance, (testCode) ->
+    markdownItTest.register mdInstance, langs, (testCode) ->
       id = "tp-"+uuid.v4()
-      mdInstance.domReady.registerCallback ->
+      postProcessors.registerElemenbById id, (elem, done) ->
         tests = []
 
         runner = config.runner
         testFlavors = config.tests
         prepareFlavors = _.select testFlavors, 'prepare'
         flavoredCode = _.reduce prepareFlavors, ((code, flavor) ->
-          flavor.prepare code, runner, domStuff), testCode
+          flavor.prepare code, runner, elem), testCode
 
         apiFlavors = _.select testFlavors, 'api'
         customApis = _.map apiFlavors, (flavor) ->
-          flavor.api flavoredCode, runner
+          flavor.api flavoredCode, runner, elem
 
-        failedCallbacks = _(customApis).chain()
-          .select "failed"
-          .pluck "failed"
-          .compact()
-          .value()
-        finishedCallbacks = _(customApis).chain()
-          .select "finished"
-          .pluck "finished"
-          .compact()
-          .value()
-
+        failedCallbacks = unifiedCallbacks customApis, "failed"
+        finishedCallbacks = unifiedCallbacks customApis, "finished"
+        
         customApi = _.reduce customApis, ((acc_api, api) ->
           _.merge acc_api, api), runner.createApi()
 

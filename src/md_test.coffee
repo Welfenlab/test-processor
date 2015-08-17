@@ -1,8 +1,7 @@
-_ = require "lodash"
 
 # code extraction out of fenced blocks
 module.exports = {
-  register: (md, gen_dom) ->
+  register: (md, langs, gen_dom) ->
     origFence = md.renderer.rules.fence
     md.renderer.rules.fence = (tokens, idx) =>
       fenceToken = tokens[idx]
