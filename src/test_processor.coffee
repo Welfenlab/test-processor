@@ -17,7 +17,7 @@ testProcessor = (langs, config) ->
       testsChanged: cbo()
       testsCodeChanged: cbo()
 
-    markdownItTest.register mdInstance, langs, (testCode) ->
+    markdownItTest.register mdInstance, langs, (testCode, token) ->
       id = "tp-"+uuid.v4()
       postProcessors.registerElemenbById id, (elem, done) ->
         tests = []
@@ -26,11 +26,11 @@ testProcessor = (langs, config) ->
         testFlavors = config.tests
         prepareFlavors = _.select testFlavors, 'prepare'
         flavoredCode = _.reduce prepareFlavors, ((code, flavor) ->
-          flavor.prepare code, runner, elem), testCode
+          flavor.prepare code, runner, elem, token), testCode
 
         apiFlavors = _.select testFlavors, 'api'
         customApis = _.map apiFlavors, (flavor) ->
-          flavor.api flavoredCode, runner, elem
+          flavor.api flavoredCode, runner, elem, token
 
         failedCallbacks = unifiedCallbacks customApis, "failed"
         finishedCallbacks = unifiedCallbacks customApis, "finished"
