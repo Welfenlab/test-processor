@@ -17,7 +17,7 @@ testProcessor = (langs, config) ->
       testsChanged: cbo()
       testsCodeChanged: cbo()
 
-    markdownItTest.register mdInstance, langs, (testCode) ->
+    markdownItTest.register mdInstance, langs, (testCode, tokens) ->
       id = "tp-"+uuid.v4()
       postProcessors.registerElemenbById id, (elem, done) ->
         tests = []
@@ -26,21 +26,22 @@ testProcessor = (langs, config) ->
         testFlavors = config.tests
         prepareFlavors = _.select testFlavors, 'prepare'
         flavoredCode = _.reduce prepareFlavors, ((code, flavor) ->
-          flavor.prepare code, runner, elem), testCode
+          flavor.prepare code, runner, elem, tokens), testCode
 
         apiFlavors = _.select testFlavors, 'api'
         customApis = _.map apiFlavors, (flavor) ->
-          flavor.api flavoredCode, runner, elem
+          flavor.api flavoredCode, runner, elem, tokens
+        customApi.remote = customApi.remote || {}
 
-        failedCallbacks = unifiedCallbacks customApis, "failed"
-        finishedCallbacks = unifiedCallbacks customApis, "finished"
-        
+        failedCallbacks = unifiedCallbacks customApis.remote, "failed"
+        finishedCallbacks = unifiedCallbacks customApis.remote, "finished"
+
         customApi = _.reduce customApis, ((acc_api, api) ->
           _.merge acc_api, api), runner.createApi()
 
-        customApi.failed = (e) ->
+        customApi.remote.failed = (e) ->
           _.each failedCallbacks, (c) -> c(e)
-        customApi.finished = () ->
+        customApi.remote.finished = () ->
           _.each finishedCallbacks, (c) -> c()
 
         runner.run flavoredCode, customApi

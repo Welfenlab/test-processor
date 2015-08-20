@@ -11,7 +11,7 @@ module.exports = {
         testCode = fenceToken.content
 
         # this one starts the test stuff
-        domStuff = gen_dom testCode
+        domStuff = gen_dom testCode, tokens
         fencedContent = domStuff.dom
 
       fencedContent
