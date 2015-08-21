@@ -36,7 +36,7 @@ testProcessor = (langs, config) ->
         finishedCallbacks = unifiedCallbacks customApis, "finished"
         
         customApi = _.reduce customApis, ((acc_api, api) ->
-          _.merge acc_api, api), runner.createApi()
+          _.merge acc_api, api), {}
 
         customApi.failed = (e) ->
           _.each failedCallbacks, (c) -> c(e)
