@@ -38,10 +38,12 @@ testProcessor = (langs, config) ->
         customApi = _.reduce customApis, ((acc_api, api) ->
           _.merge acc_api, api), {}
 
-        customApi.failed = (e) ->
+        customApi.remote.failed = (e) ->
           _.each failedCallbacks, (c) -> c(e)
-        customApi.finished = () ->
+          done()
+        customApi.remote.finished = () ->
           _.each finishedCallbacks, (c) -> c()
+          done()
 
         runner.run flavoredCode, customApi
 
