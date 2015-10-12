@@ -6,6 +6,7 @@ _ = require "lodash"
 
 unifiedCallbacks = (apis, cbName) ->
   _(apis).chain()
+    .map (api) -> api.remote
     .select cbName
     .pluck cbName
     .compact()
@@ -34,7 +35,7 @@ testProcessor = (langs, config) ->
 
         failedCallbacks = unifiedCallbacks customApis, "failed"
         finishedCallbacks = unifiedCallbacks customApis, "finished"
-        
+
         customApi = _.reduce customApis, ((acc_api, api) ->
           _.merge acc_api, api), {}
 
