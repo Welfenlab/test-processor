@@ -46,7 +46,13 @@ testProcessor = (langs, config) ->
           _.each finishedCallbacks, (c) -> c()
           done()
 
-        runner.run flavoredCode, customApi
+        deactivateConsoleAPI = """
+          console = {log: function(){}};
+        """
+
+        fullCode = deactivateConsoleAPI + "\n" + flavoredCode
+
+        runner.run fullCode, customApi
 
       return {
         dom: config.templates.tests id: id
