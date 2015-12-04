@@ -42,8 +42,8 @@ testProcessor = (langs, config) ->
         customApi.remote.failed = (e) ->
           _.each failedCallbacks, (c) -> c(e)
           done()
-        customApi.remote.finished = () ->
-          _.each finishedCallbacks, (c) -> c()
+        customApi.remote.finished = (err) ->
+          _.each finishedCallbacks, (c) -> c(err)
           done()
 
         deactivateConsoleAPI = """
@@ -52,7 +52,7 @@ testProcessor = (langs, config) ->
 
         fullCode = deactivateConsoleAPI + "\n" + flavoredCode
 
-        runner.run fullCode, customApi
+        config.testProcessor.init(runner.run fullCode, customApi)
 
       return {
         dom: config.templates.tests id: id
