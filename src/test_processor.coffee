@@ -51,8 +51,10 @@ testProcessor = (langs, config) ->
         """
 
         fullCode = deactivateConsoleAPI + "\n" + flavoredCode
-
-        config.testProcessor.init(runner.run fullCode, customApi)
+        
+        sandbox = runner.run fullCode, customApi
+        config.testProcessor?.init?(sandox)
+        return sandbox
 
       return {
         dom: config.templates.tests id: id
