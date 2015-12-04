@@ -1,6 +1,6 @@
 {
   "name": "@more-markdown/test-processor",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A more-markdown test-processor.",
   "main": "lib/test_processor.js",
   "dependencies": {
