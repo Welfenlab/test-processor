@@ -53,7 +53,7 @@ testProcessor = (langs, config) ->
         fullCode = deactivateConsoleAPI + "\n" + flavoredCode
         
         sandbox = runner.run fullCode, customApi
-        config.testProcessor?.init?(sandox)
+        config.testProcessor?.init?(sandbox)
         return sandbox
 
       return {
